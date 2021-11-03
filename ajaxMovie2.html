@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주간/주말 박스오피스</title>
+
+    <link href="//hwangsunsoo.com/lecture/ex/labs/ajaxui_study/css/common.css" rel="stylesheet">
+    <style type="text/css">
+
+    /* <tr> = 행 / <td> = 칸 / <th> = 제목줄 */
+    .wrap{
+	padding: 30px;
+    }
+    .wrap table th, .wrap table td {
+        border: 1px solid #000;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .wrap table th{
+        background: #eee;
+    }
+    .wrap table th, .wrap table td{
+        padding: 20px;
+    }
+</style>
+</head>
+
+<body>
+    
+    <div class="wrap">
+        <input type="text" id="targetDataInput" value="yyyymmdd 형태로 날짜를 입력하세요" style="width: 250px;">
+        <button id="targetDataInputButton">검색</button>
+        <table style="margin-top: 30px;">
+        </table>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+
+    $('#targetDataInputButton').on('click', function(){
+
+        var targetData = $('#targetDataInput').val();
+        // input창에 적힌 값을 읽는 작업
+        console.log(targetData);
+
+        $.ajax({
+        url: `http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=${targetData}`,
+        dataType: 'json',
+
+        success: function(data){
+            // console.log(data);
+            // console.log(data.boxOfficeResult.weeklyBoxOfficeList);
+            var rank = data.boxOfficeResult.weeklyBoxOfficeList;
+            $('.wrap table').html('<tr><th>순위</th><th>영화명</th><th>개봉일</th></tr>');
+            for(var i = 0; i < rank.length; i++){
+                // console.log(rank[i]);
+                // console.log(rank[i].rank, rank[i].movieNm, rank[i].openDt);
+                $('.wrap table').append(`<tr><td>${rank[i].rank}</td><td>${rank[i].movieNm}</td><td>${rank[i].openDt}</td></tr>`);
+                }
+            }
+        })
+    })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//hwangsunsoo.com/lecture/ex/labs/ajaxui_study/css/common.css" rel="stylesheet">
+    <title>일별 박스오피스</title>
+    <style type="text/css">
+    .wrap{
+        padding: 30px;
+    }
+    .wrap table th, .wrap table td {
+        border: 1px solid #000;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .wrap table th{
+        background: #eee;
+    }
+    .wrap table th,.wrap table td{
+        padding: 20px;
+    }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    <input type="text" id="targetDataInput" value="20211020">
+    <button id="targetDataInputButton">검색</button>
+    <table style="margin-top:30px;">
+
+    </table>
+</div>    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        $('#targetDataInputButton').on('click', function() {
+            var targetData = $('#targetDataInput').val();
+            console.log(targetData);
+
+            $.ajax({
+            url:`http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=${targetData}`,
+            dataType: 'json',
+
+            success: function(data){
+                // console.log(data.boxOfficeResult.dailyBoxOfficeList);
+                
+                var rank = data.boxOfficeResult.dailyBoxOfficeList;
+                $('.wrap table').html('<tr><th>순위</th><th>제목</th><th>개봉일</th></tr>');
+
+                // <tr> 행 <th> 제목줄
+                for(var i = 0; i < rank.length; i++){
+                    // console.log( rank[i] );
+                    console.log( rank[i].rank, rank[i].movieNm, rank[i].openDt );
+                    $('.wrap table').append(`<tr><td>${rank[i].rank}</td><td>${rank[i].movieNm}</td><td>${rank[i].openDt}</td></tr>`)
+                    // html을 불러오는 과정에서 '' "" + 따옴표, 플러스들이 헷갈렸는데 위의 append 안처럼 적으면 간결!
+                    // -> ${} 사용 + Esc키 아래 따옴표로 마크업 해줘야함! append(`원하는 html 태그 + 데이터`)
+                }
+            }
+        })
+        })
+    </script>
+
+</body>
+</html>
